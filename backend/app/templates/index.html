@@ -4,6 +4,7 @@
   <section class="card">
     <h2 class="section-title">Åbne hændelser</h2>
     <div class="stack">
+      {% for inc in incidents if inc.status in ["new", "responding", "resolving"] %}
       {% for inc in incidents if inc.status in ["new","responding","resolving"] %}
         <div class="incident-card">
           <div class="incident-main">
@@ -43,6 +44,7 @@
                   <option value="{{ u.id }}">{{ u.name }} ({{ u.kind }})</option>
                 {% endfor %}
               </select>
+              <button type="submit" class="button">Dispatch</button>
               <button class="button" type="submit">Dispatch</button>
               <button class="px-3 py-1 rounded-lg bg-sky-600 hover:bg-sky-500 text-sm">Dispatch</button>
             </form>
@@ -53,6 +55,7 @@
       {% endfor %}
     </div>
   </section>
+
         <div class="text-sm opacity-80">Ingen åbne hændelser lige nu.</div>
       {% endfor %}
     </div>
@@ -109,6 +112,7 @@
   <div class="card">
     <h3 class="section-title">Historik</h3>
     <ul class="history-list">
+      {% for inc in incidents if inc.status in ["resolved", "failed"] %}
       {% for inc in incidents if inc.status in ["resolved","failed"] %}
         <li>#{{ inc.id }} – {{ inc.type }} i {{ inc.city }} → <span class="status status-{{ inc.status }}">{{ inc.status }}</span></li>
       {% else %}
@@ -122,4 +126,5 @@
     <p class="caption">Hændelser spawner automatisk ca. hver 45s. Systemet tjekker status hvert 10s.</p>
   </div>
 </section>
+{% endblock content %}
 {% endblock %}
