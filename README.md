@@ -19,33 +19,6 @@ Enkelt, tekst-/UI-lettet dispatch-spil hvor du driver en 112-central: opret bran
 
 ---
 
-## 🧪 Kort guide: Kør projektet direkte fra GitHub
-
-Vil du hurtigt teste spillet uden at sætte noget op lokalt, kan du bruge GitHub Codespaces (gratis på de fleste konti):
-
-1. **Åbn repositoriet på GitHub** → klik på den grønne **Code**-knap → vælg fanen **Codespaces** → tryk **Create codespace on main**.
-2. Når Codespace-miljøet er startet, åbnes en VS Code-session i browseren. I terminalen køres:
-
-   ```bash
-   docker compose up --build
-   ```
-
-   eller, hvis du hellere vil køre uden Docker:
-
-   ```bash
-   python -m venv .venv
-   source .venv/bin/activate
-   pip install -r backend/requirements.txt
-   uvicorn app.main:app --app-dir backend --host 0.0.0.0 --port 8000 --reload
-   ```
-
-3. Når serveren kører, klik på den fremhævede port (8000) i Codespaces' portliste for at åbne spillet i en ny fane.
-4. Brug dashboardet til at dispatch’e enheder og tryk evt. på **Reset/seed**-linket for at nulstille demo-data.
-
-> **Tip:** De samme kommandoer kan bruges lokalt, hvis du kloner repositoriet med `git clone`.
-
----
-
 ## 📦 Projektstruktur
 
 ```
