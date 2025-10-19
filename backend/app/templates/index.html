@@ -5,6 +5,7 @@
     <h2 class="section-title">Åbne hændelser</h2>
     <div class="stack">
       {% for inc in incidents if inc.status in ["new", "responding", "resolving"] %}
+      {% for inc in incidents if inc.status in ["new","responding","resolving"] %}
         <div class="incident-card">
           <div class="incident-main">
             <div>
@@ -20,11 +21,32 @@
               <input type="hidden" name="incident_id" value="{{ inc.id }}" />
               <label class="sr-only" for="unit-select-{{ inc.id }}">Vælg enhed</label>
               <select id="unit-select-{{ inc.id }}" name="unit_id" class="input-select">
+<div class="grid md:grid-cols-2 gap-4">
+  <section class="bg-slate-900/60 rounded-xl p-4">
+    <h2 class="font-semibold mb-2">Åbne hændelser</h2>
+    <div class="space-y-2">
+      {% for inc in incidents if inc.status in ["new","responding","resolving"] %}
+        <div class="p-3 rounded-lg bg-slate-800/70">
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="text-sm uppercase tracking-wide opacity-70">#{{ inc.id }} • {{ inc.city }}</div>
+              <div class="text-base">
+                <span class="font-semibold">{{ inc.type|capitalize }}</span>
+                <span class="ml-2 text-xs opacity-70">Sværhedsgrad: {{ inc.severity }}</span>
+                <span class="ml-2 text-xs">Status: <span class="text-sky-300">{{ inc.status }}</span></span>
+              </div>
+              <div class="text-xs mt-1 opacity-80">Krav – Brand: {{ inc.need_fire }}, Ambulance: {{ inc.need_ambulance }}</div>
+            </div>
+            <form method="post" action="/dispatch" class="flex items-center gap-2">
+              <input type="hidden" name="incident_id" value="{{ inc.id }}" />
+              <select name="unit_id" class="bg-slate-900 rounded px-2 py-1 text-sm">
                 {% for u in units if u.status == 'available' %}
                   <option value="{{ u.id }}">{{ u.name }} ({{ u.kind }})</option>
                 {% endfor %}
               </select>
               <button type="submit" class="button">Dispatch</button>
+              <button class="button" type="submit">Dispatch</button>
+              <button class="px-3 py-1 rounded-lg bg-sky-600 hover:bg-sky-500 text-sm">Dispatch</button>
             </form>
           </div>
         </div>
@@ -33,6 +55,44 @@
       {% endfor %}
     </div>
   </section>
+
+        <div class="text-sm opacity-80">Ingen åbne hændelser lige nu.</div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="bg-slate-900/60 rounded-xl p-4">
+    <h2 class="font-semibold mb-2">Enheder</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+      {% for u in units %}
+        <div class="p-3 rounded-lg bg-slate-800/70">
+          <div class="text-sm uppercase opacity-70">{{ u.name }}</div>
+          <div class="text-base">Type: <span class="font-semibold">{{ u.kind }}</span></div>
+          <div class="text-xs mt-1">Status: <span class="text-emerald-300">{{ u.status }}</span></div>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+</div>
+
+<section class="mt-4 grid md:grid-cols-2 gap-4">
+  <div class="bg-slate-900/60 rounded-xl p-4">
+    <h3 class="font-semibold mb-2">Historik</h3>
+    <ul class="text-sm space-y-1">
+      {% for inc in incidents if inc.status in ["resolved","failed"] %}
+        <li class="opacity-90">#{{ inc.id }} – {{ inc.type }} i {{ inc.city }} → <span class="{% if inc.status=='resolved' %}text-emerald-400{% else %}text-rose-400{% endif %}">{{ inc.status }}</span></li>
+      {% else %}
+        <li class="opacity-70">Ingen historik endnu.</li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div class="bg-slate-900/60 rounded-xl p-4">
+    <h3 class="font-semibold mb-2">Dev</h3>
+    <a href="/admin/reset" class="inline-block px-3 py-1 rounded bg-slate-700 hover:bg-slate-600 text-sm">Reset/seed</a>
+    <p class="text-xs opacity-70 mt-2">Hændelser spawner automatisk ca. hver 45s. Systemet tjekker status hvert 10s.</p>
+  </div>
+</section>
+{% endblock %}
 
   <section class="card">
     <h2 class="section-title">Enheder</h2>
@@ -53,6 +113,7 @@
     <h3 class="section-title">Historik</h3>
     <ul class="history-list">
       {% for inc in incidents if inc.status in ["resolved", "failed"] %}
+      {% for inc in incidents if inc.status in ["resolved","failed"] %}
         <li>#{{ inc.id }} – {{ inc.type }} i {{ inc.city }} → <span class="status status-{{ inc.status }}">{{ inc.status }}</span></li>
       {% else %}
         <li class="empty-state">Ingen historik endnu.</li>
@@ -66,3 +127,4 @@
   </div>
 </section>
 {% endblock content %}
+{% endblock %}
