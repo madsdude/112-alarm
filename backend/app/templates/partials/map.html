@@ -1,0 +1,48 @@
+<section
+  id="map-panel"
+  class="card map-card"
+  hx-get="/partials/map"
+  hx-trigger="load, every 8s, refresh-map from:body"
+  hx-swap="outerHTML"
+>
+  <h3 class="section-title">Bykort &amp; responstid</h3>
+  <div class="map-wrapper">
+    <table class="map-grid">
+      <tbody>
+        {% for y in range(grid_size, -1, -1) %}
+          <tr>
+            {% for x in range(0, grid_size + 1) %}
+              {% set cell_incidents = incidents | selectattr('grid_x', 'equalto', x) | selectattr('grid_y', 'equalto', y) | list %}
+              {% set cell_units = units | selectattr('location_x', 'equalto', x) | selectattr('location_y', 'equalto', y) | list %}
+              {% set cell_hospitals = hospitals | selectattr('grid_x', 'equalto', x) | selectattr('grid_y', 'equalto', y) | list %}
+              {% set cell_stations = stations | selectattr('grid_x', 'equalto', x) | selectattr('grid_y', 'equalto', y) | list %}
+              <td>
+                {% if cell_incidents %}
+                  <span class="map-chip map-incident" title="Hændelse">I</span>
+                {% endif %}
+                {% if cell_units %}
+                  <span class="map-chip map-unit" title="Enhed">U</span>
+                {% endif %}
+                {% if cell_hospitals %}
+                  <span class="map-chip map-hospital" title="Hospital">H</span>
+                {% endif %}
+                {% if cell_stations %}
+                  <span class="map-chip map-station" title="Station">S</span>
+                {% endif %}
+                {% if not (cell_incidents or cell_units or cell_hospitals or cell_stations) %}
+                  <span class="map-chip map-empty"></span>
+                {% endif %}
+              </td>
+            {% endfor %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="map-legend">
+    <span class="map-chip map-incident">I</span> Hændelse
+    <span class="map-chip map-unit">U</span> Enhed
+    <span class="map-chip map-station">S</span> Station
+    <span class="map-chip map-hospital">H</span> Hospital
+  </div>
+</section>

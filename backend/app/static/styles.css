@@ -75,19 +75,53 @@ body.page-body {
   font-weight: 600;
 }
 
-.split-grid {
+.dashboard-grid {
   display: grid;
   gap: 16px;
 }
 
-.secondary-grid {
-  margin-top: 20px;
+.secondary-column {
+  display: grid;
+  gap: 16px;
 }
 
-@media (min-width: 768px) {
-  .split-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+@media (min-width: 960px) {
+  .dashboard-grid {
+    grid-template-columns: 2fr 1.2fr;
+    align-items: start;
   }
+
+  .dashboard-grid > .card,
+  .dashboard-grid > section,
+  .dashboard-grid > .secondary-column {
+    height: 100%;
+  }
+}
+
+.status-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.status-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  margin: 0;
+}
+
+.status-grid dt {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.status-grid dd {
+  margin: 2px 0 0;
+  font-size: 1.1rem;
+  font-weight: 600;
 }
 
 .stack {
@@ -219,6 +253,22 @@ body.page-body {
   margin-top: 6px;
 }
 
+.unit-meta {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.unit-crew {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 0;
+  font-size: 0.78rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
 .unit-type {
   font-weight: 600;
 }
@@ -260,6 +310,12 @@ body.page-body {
   font-size: 0.9rem;
 }
 
+.history-reward {
+  margin-left: 6px;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
 .caption {
   margin-top: 12px;
   font-size: 0.75rem;
@@ -275,4 +331,112 @@ body.page-body {
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   border: 0;
+}
+
+.personnel-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.personnel-table th,
+.personnel-table td {
+  text-align: left;
+  padding: 6px 4px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.personnel-table th {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.fatigue-bar {
+  position: relative;
+  display: inline-block;
+  width: 70px;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.2);
+  overflow: hidden;
+  margin-right: 8px;
+}
+
+.fatigue-bar span {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  background: var(--accent);
+}
+
+.fatigue-value {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.map-wrapper {
+  overflow-x: auto;
+}
+
+.map-grid {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 420px;
+}
+
+.map-grid td {
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  text-align: center;
+  vertical-align: middle;
+  padding: 2px;
+}
+
+.map-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.map-incident {
+  background: rgba(248, 113, 113, 0.25);
+  color: var(--danger);
+}
+
+.map-unit {
+  background: rgba(56, 189, 248, 0.25);
+  color: var(--accent);
+}
+
+.map-hospital {
+  background: rgba(74, 222, 128, 0.25);
+  color: var(--success);
+}
+
+.map-station {
+  background: rgba(165, 180, 252, 0.25);
+  color: #a5b4fc;
+}
+
+.map-empty {
+  background: transparent;
+}
+
+.map-legend {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-top: 12px;
+  align-items: center;
 }
