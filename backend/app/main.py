@@ -18,9 +18,6 @@ BASE_DIR = Path(__file__).resolve().parent
 app = FastAPI(title="112 Alarm – MVP")
 app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="static")
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
-app = FastAPI(title="112 Alarm – MVP")
-app.mount("/static", StaticFiles(directory="app/static"), name="static")
-templates = Jinja2Templates(directory="app/templates")
 
 
 @app.on_event("startup")
