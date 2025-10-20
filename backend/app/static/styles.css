@@ -12,6 +12,7 @@
   --shadow: 0 18px 38px rgba(15, 23, 42, 0.45);
   --font: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
 }
+/* Placeholder for custom styles if needed. Tailwind CDN is used by default. */
 
 * {
   box-sizing: border-box;
