@@ -30,22 +30,12 @@ def index(request: Request):
     with get_session() as s:
         incidents = s.exec(select(Incident).order_by(Incident.id.desc())).all()
         units = s.exec(select(Unit)).all()
-
-    active_statuses = {"new", "responding", "resolving"}
-    history_statuses = {"resolved", "failed"}
-
-    active_incidents = [inc for inc in incidents if inc.status in active_statuses]
-    history_incidents = [inc for inc in incidents if inc.status in history_statuses]
-    available_units = [unit for unit in units if unit.status == "available"]
     return templates.TemplateResponse(
         "index.html",
         {
             "request": request,
             "incidents": incidents,
             "units": units,
-            "active_incidents": active_incidents,
-            "history_incidents": history_incidents,
-            "available_units": available_units,
         },
     )
 
