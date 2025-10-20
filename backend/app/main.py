@@ -10,6 +10,12 @@ from .models import Incident, Unit
 from .services import spawn_incident, dispatch_unit, tick
 from .seed import seed
 
+
+BASE_DIR = Path(__file__).resolve().parent
+
+app = FastAPI(title="112 Alarm – MVP")
+app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="static")
+templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 app = FastAPI(title="112 Alarm – MVP")
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 templates = Jinja2Templates(directory="app/templates")
@@ -30,12 +36,22 @@ def index(request: Request):
     with get_session() as s:
         incidents = s.exec(select(Incident).order_by(Incident.id.desc())).all()
         units = s.exec(select(Unit)).all()
+
+    active_statuses = {"new", "responding", "resolving"}
+    history_statuses = {"resolved", "failed"}
+
+    active_incidents = [inc for inc in incidents if inc.status in active_statuses]
+    history_incidents = [inc for inc in incidents if inc.status in history_statuses]
+    available_units = [unit for unit in units if unit.status == "available"]
     return templates.TemplateResponse(
         "index.html",
         {
             "request": request,
             "incidents": incidents,
             "units": units,
+            "active_incidents": active_incidents,
+            "history_incidents": history_incidents,
+            "available_units": available_units,
         },
     )
 
