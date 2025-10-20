@@ -1,1 +1,72 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="split-grid">
+  <section class="card">
+    <h2 class="section-title">Åbne hændelser</h2>
+    <div class="stack">
+      {% for inc in active_incidents %}
+        <div class="incident-card">
+          <div class="incident-main">
+            <div>
+              <div class="incident-meta">#{{ inc.id }} • {{ inc.city }}</div>
+              <div class="incident-heading">
+                <span class="incident-type">{{ inc.type|capitalize }}</span>
+                <span class="incident-badge">Sværhedsgrad: {{ inc.severity }}</span>
+                <span class="incident-badge">Status: <span class="status status-{{ inc.status|replace(' ', '-') }}">{{ inc.status }}</span></span>
+              </div>
+              <div class="incident-req">Krav – Brand: {{ inc.need_fire }}, Ambulance: {{ inc.need_ambulance }}</div>
+            </div>
+            <form method="post" action="/dispatch" class="dispatch-form">
+              <input type="hidden" name="incident_id" value="{{ inc.id }}" />
+              <label class="sr-only" for="unit-select-{{ inc.id }}">Vælg enhed</label>
+              <select id="unit-select-{{ inc.id }}" name="unit_id" class="input-select" {% if not available_units %}disabled{% endif %}>
+                {% for unit in available_units %}
+                  <option value="{{ unit.id }}">{{ unit.name }} ({{ unit.kind }})</option>
+                {% else %}
+                  <option disabled>Ingen ledige enheder</option>
+                {% endfor %}
+              </select>
+              <button type="submit" class="button" {% if not available_units %}disabled{% endif %}>Dispatch</button>
+            </form>
+          </div>
+        </div>
+      {% else %}
+        <div class="empty-state">Ingen åbne hændelser lige nu.</div>
+      {% endfor %}
+    </div>
+  </section>
 
+  <section class="card">
+    <h2 class="section-title">Enheder</h2>
+    <div class="unit-grid">
+      {% for unit in units %}
+        <div class="unit-card">
+          <div class="unit-name">{{ unit.name }}</div>
+          <div class="unit-info">Type: <span class="unit-type">{{ unit.kind }}</span></div>
+          <div class="unit-status">Status: <span class="status status-{{ unit.status|replace(' ', '-') }}">{{ unit.status }}</span></div>
+        </div>
+      {% else %}
+        <div class="empty-state">Ingen enheder er oprettet endnu.</div>
+      {% endfor %}
+    </div>
+  </section>
+</div>
+
+<section class="split-grid secondary-grid">
+  <div class="card">
+    <h3 class="section-title">Historik</h3>
+    <ul class="history-list">
+      {% for inc in history_incidents %}
+        <li>#{{ inc.id }} – {{ inc.type }} i {{ inc.city }} → <span class="status status-{{ inc.status|replace(' ', '-') }}">{{ inc.status }}</span></li>
+      {% else %}
+        <li class="empty-state">Ingen historik endnu.</li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div class="card">
+    <h3 class="section-title">Dev</h3>
+    <a href="/admin/reset" class="button button-secondary">Reset/seed</a>
+    <p class="caption">Hændelser spawner automatisk ca. hver 45s. Systemet tjekker status hvert 10s.</p>
+  </div>
+</section>
+{% endblock %}
