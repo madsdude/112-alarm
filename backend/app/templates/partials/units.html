@@ -1,0 +1,28 @@
+<section
+  id="units-panel"
+  class="card"
+  hx-get="/partials/units"
+  hx-trigger="load, every 6s, refresh-units from:body"
+  hx-swap="outerHTML"
+>
+  <h2 class="section-title">Enheder</h2>
+  <div class="unit-grid">
+    {% for u in units %}
+      <article class="unit-card">
+        <div class="unit-name">{{ u.name }}</div>
+        <div class="unit-info">Type: <span class="unit-type">{{ u.kind }}</span></div>
+        <div class="unit-status">Status: <span class="status status-{{ u.status }}">{{ u.status }}</span></div>
+        <div class="unit-meta">Placering: ({{ u.location_x }}, {{ u.location_y }})</div>
+        <div class="unit-meta">Tilstand: {{ (u.condition * 100)|round(0) }}%</div>
+        {% set crew = personnel | selectattr('unit_id', 'equalto', u.id) | list %}
+        <ul class="unit-crew">
+          {% for member in crew %}
+            <li>{{ member.name }} – {{ member.role }} ({{ member.fatigue|round(0) }}%)</li>
+          {% else %}
+            <li>Ingen bemanding</li>
+          {% endfor %}
+        </ul>
+      </article>
+    {% endfor %}
+  </div>
+</section>

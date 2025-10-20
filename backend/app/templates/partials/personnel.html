@@ -1,0 +1,51 @@
+<section
+  id="personnel-panel"
+  class="card"
+  hx-get="/partials/personnel"
+  hx-trigger="load, every 10s, refresh-personnel from:body"
+  hx-swap="outerHTML"
+>
+  <h3 class="section-title">Personale &amp; shifts</h3>
+  <table class="personnel-table">
+    <thead>
+      <tr>
+        <th>Navn</th>
+        <th>Rolle</th>
+        <th>Fatigue</th>
+        <th>Status</th>
+        <th>Enhed</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for member in personnel %}
+        <tr>
+          <td>{{ member.name }}</td>
+          <td>{{ member.role }}</td>
+          <td>
+            <span class="fatigue-bar">
+              <span style="width: {{ member.fatigue|round(0) }}%"></span>
+            </span>
+            <span class="fatigue-value">{{ member.fatigue|round(0) }}%</span>
+          </td>
+          <td>
+            {% if member.rest_until %}
+              Hviler til {{ member.rest_until.strftime('%H:%M') }}
+            {% elif member.on_shift %}
+              På vagt
+            {% else %}
+              Klar
+            {% endif %}
+          </td>
+          <td>
+            {% set unit = units | selectattr('id', 'equalto', member.unit_id) | first %}
+            {{ unit.name if unit else '-' }}
+          </td>
+        </tr>
+      {% else %}
+        <tr>
+          <td colspan="5" class="empty-state">Ingen personale registreret.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>

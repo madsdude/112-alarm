@@ -1,0 +1,56 @@
+<section
+  id="incidents-panel"
+  class="card"
+  hx-get="/partials/incidents"
+  hx-trigger="load, every 6s, refresh-incidents from:body"
+  hx-swap="outerHTML"
+>
+  <h2 class="section-title">Åbne hændelser</h2>
+  <div class="stack">
+    {% for inc in incidents if inc.status in ["new", "responding", "resolving"] %}
+      {% set age = (generated_at - inc.created_at).total_seconds() if inc.created_at else 0 %}
+      {% set remaining = inc.deadline_s - age %}
+      <article class="incident-card">
+        <div class="incident-main">
+          <div>
+            <div class="incident-meta">#{{ inc.id }} • {{ inc.city }} • ({{ inc.grid_x }}, {{ inc.grid_y }})</div>
+            <div class="incident-heading">
+              <span class="incident-type">{{ inc.type|capitalize }}</span>
+              <span class="incident-badge">Sværhedsgrad: {{ inc.severity }}</span>
+              <span class="incident-badge">
+                Status: <span class="status status-{{ inc.status }}">{{ inc.status }}</span>
+              </span>
+            </div>
+            <div class="incident-req">
+              Brand: {{ inc.need_fire }}, Ambulance: {{ inc.need_ambulance }} | Deadline: {{ remaining|int if remaining > 0 else 0 }}s
+            </div>
+            <div class="incident-req">
+              Belønning: {{ inc.cash_reward }} kr / {{ inc.xp_reward }} XP
+            </div>
+          </div>
+          <form
+            method="post"
+            action="/dispatch"
+            class="dispatch-form"
+            hx-post="/dispatch"
+            hx-target="#incidents-panel"
+            hx-swap="outerHTML"
+          >
+            <input type="hidden" name="incident_id" value="{{ inc.id }}" />
+            <label class="sr-only" for="unit-select-{{ inc.id }}">Vælg enhed</label>
+            <select id="unit-select-{{ inc.id }}" name="unit_id" class="input-select">
+              {% for u in units if u.status == 'available' %}
+                <option value="{{ u.id }}">{{ u.name }} ({{ u.kind }})</option>
+              {% else %}
+                <option disabled>Ingen enheder tilgængelige</option>
+              {% endfor %}
+            </select>
+            <button type="submit" class="button" {% if not available_units %}disabled{% endif %}>Dispatch</button>
+          </form>
+        </div>
+      </article>
+    {% else %}
+      <div class="empty-state">Ingen åbne hændelser lige nu.</div>
+    {% endfor %}
+  </div>
+</section>

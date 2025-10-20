@@ -1,0 +1,24 @@
+<section
+  id="history-panel"
+  class="card"
+  hx-get="/partials/history"
+  hx-trigger="load, every 12s, refresh-history from:body"
+  hx-swap="outerHTML"
+>
+  <h3 class="section-title">Historik</h3>
+  <ul class="history-list">
+    {% for inc in history_incidents[:12] %}
+      <li>
+        #{{ inc.id }} – {{ inc.type }} i {{ inc.city }} →
+        <span class="status status-{{ inc.status }}">{{ inc.status }}</span>
+        {% if inc.status == 'resolved' %}
+          <span class="history-reward">(+{{ inc.cash_reward }} kr / {{ inc.xp_reward }} XP)</span>
+        {% else %}
+          <span class="history-reward">(deadline overskredet)</span>
+        {% endif %}
+      </li>
+    {% else %}
+      <li class="empty-state">Ingen historik endnu.</li>
+    {% endfor %}
+  </ul>
+</section>
