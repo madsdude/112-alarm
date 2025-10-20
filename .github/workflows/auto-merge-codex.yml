@@ -1,0 +1,21 @@
+name: Auto-merge Codex PRs
+on:
+  pull_request:
+    types: [opened, synchronize, labeled, reopened]
+
+jobs:
+  automerge:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    if: >
+      github.actor == 'Codex' ||
+      contains(join(fromJson('["" ]') + github.event.pull_request.labels.*.name, ','), 'codex')
+
+    steps:
+      - name: Enable auto-merge (squash)
+        uses: peter-evans/enable-pull-request-automerge@v3
+        with:
+          pull-request-number: ${{ github.event.pull_request.number }}
+          merge-method: squash
